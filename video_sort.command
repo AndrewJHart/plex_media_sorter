@@ -31,7 +31,7 @@ t_tor_dir = os.getenv('TR_TORRENT_DIR')	   # torrent directory
 t_tor_hash = os.getenv('TR_TORRENT_HASH')  # torrent hash
 t_tor_name = os.getenv('TR_TORRENT_NAME')  # torrent name
 
-# build rpc api url at run time
+# build rpc api url dynamically
 t_api = '%s://%s:%s/%s/%s/' % (
 	t_proto,
 	t_host,
@@ -157,9 +157,9 @@ def main():
 	"""
 	# display some welcome text to the user
 	print '\n\n'
-	print '         ===================================================='
-	print '         = LETS GET TO SORTING & MOVING YOUR MEDIA FILES :) ='
-	print '         ===================================================='
+	print '           ===================================================='
+	print '           = LETS GET TO SORTING & MOVING YOUR MEDIA FILES :) ='
+	print '           ===================================================='
 	print '\n'
 
 	# get session key & prep
@@ -190,10 +190,6 @@ def main():
 
 def get_session_key():
 	"""
-	@note This is not currently used & was added for subsequent
-	 version. Could be deprecated - have no decided if want to 
-	 to use the transmission RPC API yet. 
-	 
 	Makes initial request to transmission rpc API to store
 	 the value of the current session for use in all subsequent
 	requests to the API.
@@ -207,9 +203,9 @@ def get_session_key():
 	@return  {str}  returns the current session key as string
 	"""
 
-	if not session:
-		# init the session object
-		session = http_request.Session()
+	# if not session:
+	# 	# init the session object
+	# 	session = http_request.Session()
 
 	# make initial request & get header value from response
 	return session.get(t_api).headers.get(
@@ -276,7 +272,6 @@ def move_media_by_type(media_type, filename):
 	tmp_filename = None
 
 	# ensure that this is the proper file type first & not an excluded filename
-	# if extension in allowed_extensions and name not in excluded_filenames:
 	if extension in allowed_extensions and name not in excluded_filenames:
 		# catch subtitles that are not named the same as movie & correct for plex
 		if 'eng' in name.lower() and '.srt' in name.lower():
@@ -285,8 +280,7 @@ def move_media_by_type(media_type, filename):
 			# the fact that we are currently processing in the loop outside of the actual
 			# movie/episode name (working on English.srt) & therefore do not have access 
 			# to the movie name.. We don't know if the movie is processed before or after
-			# the subtitles either & it could be alphabetical so this is the best method
-			# currently for performing a best guess at the file name to rename subtitles to
+			# the subtitles either & it could be alphabetical so this is the best method for now.
 			tmp_path = get_path_from_filename(filename)
 			tmp_filename = build_filename_from_path(filename)
 
@@ -303,6 +297,12 @@ def move_media_by_type(media_type, filename):
 		if media_type == 'episode' or media_type == 'episodesubtitle':
 			print 'moving %s %s to %s%s' % (media_type, name, base_path, shows_path)
 
+			Notifier.notify(
+				'Moved %s %s to %s%s' % (media_type, name, base_path, shows_path),
+				title='Video Sort',
+				sound='Ping'
+			)
+
 			# move the file
 			try:
 				# copy to tv shows directory
@@ -317,13 +317,6 @@ def move_media_by_type(media_type, filename):
 				# reset the tmp vars
 				tmp_filename = None
 				tmp_path = None
-
-			# notify end-user that move was accomplished
-			Notifier.notify(
-				'Moved %s %s to %s%s' % (media_type, name, base_path, shows_path),
-				title='Video Sort',
-				sound='Ping'
-			)
 
 
 		elif media_type == 'movie' or media_type == 'moviesubtitle':

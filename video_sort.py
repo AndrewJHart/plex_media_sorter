@@ -190,6 +190,10 @@ def main():
 
 def get_session_key():
 	"""
+	@note This is not currently used & was added for subsequent
+	 version. Could be deprecated - have no decided if want to 
+	 to use the transmission RPC API yet. 
+	 
 	Makes initial request to transmission rpc API to store
 	 the value of the current session for use in all subsequent
 	requests to the API.
@@ -203,9 +207,9 @@ def get_session_key():
 	@return  {str}  returns the current session key as string
 	"""
 
-	# if not session:
-	# 	# init the session object
-	# 	session = http_request.Session()
+	if not session:
+		# init the session object
+		session = http_request.Session()
 
 	# make initial request & get header value from response
 	return session.get(t_api).headers.get(
@@ -275,7 +279,7 @@ def move_media_by_type(media_type, filename):
 	# if extension in allowed_extensions and name not in excluded_filenames:
 	if extension in allowed_extensions and name not in excluded_filenames:
 		# catch subtitles that are not named the same as movie & correct for plex
-		if name.lower() == 'english.srt':
+		if 'eng' in name.lower() and '.srt' in name.lower():
 			# strip the extension from filename, get the path, & build the filename
 			# we have to guess the filename from the final folder in the path due to 
 			# the fact that we are currently processing in the loop outside of the actual

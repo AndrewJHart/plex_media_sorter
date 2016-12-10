@@ -150,10 +150,12 @@ get_extension_from_filename = lambda f: f.rsplit('.', 1)[1]
 
 def main():
 	"""
-	Takes paths & uses globs to find any files in them - 
+	The main loop
+
+	uses configured paths & globs to find any files in them - 
 	iterating over the found files & gathering metadata
 	to perform best guess as to where a media file should
-	be moved too.
+	be moved.
 	"""
 	# display some welcome text to the user
 	print '\n\n'
@@ -364,6 +366,9 @@ def move_media_by_type(media_type, filename):
 
 	return
 
+
+def remove_processed_directories(filename, path):
+	pass
 
 
 if __name__ == '__main__': 

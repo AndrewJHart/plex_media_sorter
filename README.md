@@ -50,9 +50,10 @@ Todo
 ===========
 
 - A configuration file to replace the hardcoded defaults at the top of script.
+- add cleanup function to remove folders once media has been moved
 - bash script that will build the python script, set as executable file, 
   and rename it - so that transmission (or any program) can invoke it.
-
+- consider moving this into a class or more OOP pattern
 
 Notes
 =====

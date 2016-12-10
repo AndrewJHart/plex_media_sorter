@@ -38,11 +38,20 @@ $ pip install -r requirements.txt
 Use
 ===
 
+For now, because of a lack of `settings.py` configuration script, you will need to manually adjust the paths to suit your own machine. I configure transmission to download everything to a `tmp` folder & then configure a tuple of glob paths for `video_sort` to look within for finding media.
+
 If you want to run the script manually then you can run it directly just like any python script:
 
 ```bash
 $ python video_sort.py
 ```
+
+Todo
+===========
+
+- A configuration file to replace the hardcoded defaults at the top of script.
+- bash script that will build the python script, set as executable file, 
+  and rename it - so that transmission (or any program) can invoke it.
 
 
 Notes

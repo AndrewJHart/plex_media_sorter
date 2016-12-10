@@ -157,9 +157,9 @@ def main():
 	"""
 	# display some welcome text to the user
 	print '\n\n'
-	print '         ===================================================='
-	print '         = LETS GET TO SORTING & MOVING YOUR MEDIA FILES :) ='
-	print '         ===================================================='
+	print ' ===================================================='
+	print ' = LETS GET TO SORTING & MOVING YOUR MEDIA FILES :) ='
+	print ' ===================================================='
 	print '\n'
 
 	# get session key & prep
@@ -277,6 +277,7 @@ def move_media_by_type(media_type, filename):
 
 	# ensure that this is the proper file type first & not an excluded filename
 	# if extension in allowed_extensions and name not in excluded_filenames:
+	#if any(word for word in excluded_filenames)
 	if extension in allowed_extensions and name not in excluded_filenames:
 		# catch subtitles that are not named the same as movie & correct for plex
 		if 'eng' in name.lower() and '.srt' in name.lower():

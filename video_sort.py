@@ -367,7 +367,15 @@ def move_media_by_type(media_type, filename):
 	return
 
 
-def remove_processed_directories(filename, path):
+def cleanup(filename, path):
+	"""
+	removes the folder & any leftover files within a dir
+	 that has already been processed. We currently have 
+	no state or model to use as indicator of what has been
+	 handled so its important that this function is invoked 
+	in proper order after the media files have been moved.
+	"""
+
 	pass
 
 

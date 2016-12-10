@@ -9,7 +9,40 @@ If you haven't heard of [plex](http://plex.tv) then I suggest you check it out b
 Video Sort
 ===========
 
-Video sort is a simple script that is to be executed after the media download has completed. For example, I use transmission which has an option to run a script after a file has completed downloaded. This is where `video_sort.command` comes into play. Once a torrent has completed & the script is invoked it will (and very successfully i might add) determine the type of the various file(s) and then begin to sort that media by its type (episode, movie, subtitle, etc..), finally moving the media to specified folders that are set in the configuration. 
+Video sort is a simple script that is to be executed after the media download has completed. For example, I use transmission, which has an option to run a script after a file has completed downloaded. This is where `video_sort.command` comes into play. Once a torrent has completed & the script is invoked it will (and very successfully i might add) determine the type of the various file(s) and then begin to sort that media by its type (episode, movie, subtitle, etc..), finally moving the media to specified folders that are set in the configuration. 
+
+> This library makes heavy use of the python `guessit` library, which is
+> an amazingly effective tool for extracting metadata from a media file or filename. Guessit can be found [here](https://github.com/guessit-io/guessit)
+
+Installation
+============
+
+I Recommend creating a virtual environment using `virtualenv` (named venv) & installing the packages within like so:
+
+```bash
+$ virtualenv venv --no-site-packages
+```
+
+Then activate the virtual environment:
+
+```bash
+$ . venv/bin/activate
+```
+
+Install the pip packages:
+
+```bash
+$ pip install -r requirements.txt
+```
+
+Use
+===
+
+If you want to run the script manually then you can run it directly just like any python script:
+
+```bash
+$ python video_sort.py
+```
 
 
 Notes

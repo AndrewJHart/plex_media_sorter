@@ -291,7 +291,7 @@ def move_media_by_type(media_type, filename):
 			tmp_filename = build_filename_from_path(filename)
 
 			# print info about op & updated filename for subtitles
-			print '\nThis subtitle has a useless name (English.srt).. Renaming %s to %s.srt' % (name, tmp_filename)
+			print '\nThis subtitle has a name that plex does not recognize.. Renaming %s to %s.srt' % (name, tmp_filename)
 
 			# rename the subs to the episode name with srt extension
 			shutil.move(filename, '%s/%s.srt' % (tmp_path, tmp_filename))

@@ -242,8 +242,7 @@ def move_media_by_type(media_type, filename):
 	tmp_path, tmp_filename = None, None
 
 	# ensure that this is the proper file type first & not an excluded filename
-	# if extension in allowed_extensions and name not in excluded_filenames:
-	#if any(word for word in excluded_filenames)
+	# if any(word for word in excluded_filenames)
 	if extension in allowed_extensions and name not in excluded_filenames:
 		# catch subtitles that are not named the same as movie & correct for plex
 		if 'eng' in name.lower() and '.srt' in name.lower():
@@ -268,17 +267,20 @@ def move_media_by_type(media_type, filename):
 			return
 
 		if media_type == 'episode' or media_type == 'episodesubtitle':
-			print 'moving %s %s to %s%s' % (media_type, name, base_path, shows_path)
+			# cache destination path
+			dest_path = os.path.join(base_path, shows_path)
+			
+			print 'moving %s %s to %s' % (media_type, name, dest_path)
 
 			# move the file
 			try:
 				# copy to tv shows directory
-				shutil.move(filename, '%s%s' % (base_path, shows_path))
+				shutil.move(filename, dest_path)
 			except Exception as e:
 				# file must have been renamed.. try the updated subtitle name
 				shutil.move(
 					'%s/%s.srt' % (tmp_path, tmp_filename), 
-					'%s%s' % (base_path, shows_path)
+					dest_path
 				)
 
 				# reset the tmp vars
@@ -287,29 +289,32 @@ def move_media_by_type(media_type, filename):
 
 			# notify end-user that move was accomplished
 			Notifier.notify(
-				'Moved %s %s to %s%s' % (media_type, name, base_path, shows_path),
+				'Moved %s %s to %s' % (media_type, name, dest_path),
 				title='Video Sort',
 				sound='Ping'
 			)
 
 
 		elif media_type == 'movie' or media_type == 'moviesubtitle':
-			print 'moving %s %s to %s%s' % (media_type, name, base_path, movies_path)
+			# cache destination path
+			dest_path = os.path.join(base_path, movies_path)
+
+			print 'moving %s %s to %s' % (media_type, name, dest_path)
 
 			Notifier.notify(
-				'Moved %s %s to %s%s' % (media_type, name, base_path, movies_path),
+				'Moved %s %s to %s' % (media_type, name, dest_path),
 				title='Video Sort',
 				sound='Ping'
 			)
 			
 			# move the file
 			try:
-				shutil.move(filename, '%s%s' % (base_path, movies_path))
+				shutil.move(filename, dest_path)
 			except Exception as e:
 				# file must have been renamed.. try the updated subtitle name
 				shutil.move(
 					'%s/%s.srt' % (tmp_path, tmp_filename), 
-					'%s%s' % (base_path, movies_path)
+					dest_path
 				)
 
 				# reset the tmp vars
@@ -320,12 +325,6 @@ def move_media_by_type(media_type, filename):
 			print '\nNot a media file or unknown media. Unable to determine type..'
 	else:
 		print 'Oops!! %s is an excluded filename.. skipping' % (name,)
-		
-		return Notifier.notify(
-			'Skipping %s - not finished downloading' % (name),
-			title='Video Sort',
-			sound='Frog'
-		)
 
 	return
 

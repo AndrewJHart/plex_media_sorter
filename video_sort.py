@@ -45,15 +45,14 @@ session = http_request.Session()
 
 # base & source paths
 base_path = '/Users/michelle/'
-source_path = ('%stmp/' % base_path)
-external_base_path = '/Volumes/Movies\ Part\ Deux/'
+source_path = os.path.join(base_path, 'tmp/')
 
 # destination paths
-dest_base_path = '/Volumes/Movies\ Part\ Deux/'
 movies_path = 'Movies/'
 shows_path = 'TV Shows/'
 
-# tuple of different glob paths
+# tuple of globs to handle various levels
+# of nesting with downloaded files
 paths = (
 	'%s**/**/*' % source_path,
 	'%s**/*' % source_path,
@@ -175,9 +174,9 @@ def main():
 			try:
 				print '\n<---------------------->\n'
 				print 'Found: \n %s' % get_filename_from_path(name)
-				
+
 				# get media metadata for this file
-				metadata = build_media_metadata(name)
+				metadata = guess_file_info(name)
 
 				# get & check media type from metadata
 				ret, media_type = get_media_type(metadata)
@@ -209,33 +208,14 @@ def get_session_key():
 	@return  {str}  returns the current session key as string
 	"""
 
-	if not session:
+	# if not session:
 		# init the session object
-		session = http_request.Session()
+		# session = http_request.Session()
 
 	# make initial request & get header value from response
 	return session.get(t_api).headers.get(
 		'X-Transmission-Session-Id'
 	)
-
-
-def build_media_metadata(filename):
-	"""
-	Attempts to build a dict of information about the
-	given file by making reasonable assumptions using
-	the `guessit` library
-
-	@param  {str}  `filename`  the path & filename to gather data for
-	"""
-
-	# use guessit to grab metadata on given file
-	metadata = guess_file_info(filename)
-
-	# display the gathered metadata for current file
-	print '\nGathering metadata for %s ...' % get_filename_from_path(filename)
-	print metadata
-
-	return metadata
 
 
 def get_media_type(metadata):
@@ -341,7 +321,6 @@ def move_media_by_type(media_type, filename):
 			# move the file
 			try:
 				shutil.move(filename, '%s%s' % (base_path, movies_path))
-				# shutil.move(filename, '%s%s' % (external_base_path, movies_path))
 			except Exception as e:
 				# file must have been renamed.. try the updated subtitle name
 				shutil.move(

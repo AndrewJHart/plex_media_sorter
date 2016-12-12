@@ -324,19 +324,42 @@ def move_media_by_type(media_type, filename):
 		else:
 			print '\nNot a media file or unknown media. Unable to determine type..'
 	else:
-		print 'Oops!! %s is an excluded filename.. skipping' % (name,)
+		# remove the "undesirables" (baskets of deplorables lol)
+		try:
+			print 'Oops!! %s is an excluded filename.. removing' % (name,)
+			os.remove(filename)
+			
+		except Exception as e:
+			print "error deleting file, swallowing excepting. Original error %s" % e
 
 	return
 
 
-def cleanup(filename, path):
+def cleanup(path):
 	"""
+	@todo Complete & test; Do not use this yet - unfinished!
+
 	removes the folder & any leftover files within a dir
 	 that has already been processed. We currently have 
 	no state or model to use as indicator of what has been
 	 handled so its important that this function is invoked 
 	in proper order after the media files have been moved.
 	"""
+	if os.path.isfile(path):
+		# we need the outermost folder; return
+		return
+
+	if os.path.isdir(path):
+		# iterate over files within folder & ensure safe to rm
+		for filename in glob.glob(path):
+			# ensure the extension is allowed to be removed
+			extension = get_extension_from_filename(filename)
+
+			if extension in allowed_extensions:
+				return
+			else:
+				shutil.rmtree(path)
+
 
 	pass
 

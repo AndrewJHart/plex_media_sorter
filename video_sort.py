@@ -179,10 +179,13 @@ def main():
 				metadata = guess_file_info(name)
 
 				# get & check media type from metadata
-				ret, media_type = get_media_type(metadata)
+				media_type = get_media_type(metadata)
 
+				# print file_type & status for user
+				print '\nType: %s ..' % media_type
+				
 				# if 1st return val is true move media
-				if ret:
+				if media_type and media_type is not 'unknown':
 					move_media_by_type(media_type, name)
 
 			except Exception as e:
@@ -208,10 +211,6 @@ def get_session_key():
 	@return  {str}  returns the current session key as string
 	"""
 
-	# if not session:
-		# init the session object
-		# session = http_request.Session()
-
 	# make initial request & get header value from response
 	return session.get(t_api).headers.get(
 		'X-Transmission-Session-Id'
@@ -223,22 +222,10 @@ def get_media_type(metadata):
 	Sorts the type of media (e.g. movie/episode/etc..)
 
 	@param  {dict}  `metadata`  metadata on particular media
-	@return [bool, str] 		returns success & media_type or fail & none
+	@return [dict or False]     returns dict of type info or False if none
 	"""
 
-	if 'type' in metadata:
-		# get the value from `type` key
-		media_type = metadata.get('type', None)
-
-		# print file_type & status for user
-		print '\nType: %s ..' % media_type
-
-		if media_type == 'unknown':
-			return False, media_type
-
-		return True, media_type
-
-	return False, None
+	return metadata.get('type') if 'unknown' not in metadata['type'] else False
 
 
 def move_media_by_type(media_type, filename):
@@ -254,8 +241,7 @@ def move_media_by_type(media_type, filename):
 
 	extension = get_extension_from_filename(name)
 
-	tmp_path = None
-	tmp_filename = None
+	tmp_path, tmp_filename = None, None
 
 	# ensure that this is the proper file type first & not an excluded filename
 	# if extension in allowed_extensions and name not in excluded_filenames:

@@ -46,6 +46,21 @@ If you want to run the script manually then you can run it directly just like an
 $ python video_sort.py
 ```
 
+The file has been modified to be executable but in case you need to do this
+manually simply run:
+
+```bash
+chmod +x video_sort.py
+```
+
+Then you u can configure transmission to auto-run the python utility upon completion. 
+
+It can also be ran direclty like so after be set as executable: 
+
+```bash
+./video_sort.py
+```
+
 Todo
 ===========
 

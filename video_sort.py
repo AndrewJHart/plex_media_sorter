@@ -328,9 +328,11 @@ def move_media_by_type(media_type, filename):
 		try:
 			print 'Oops!! %s is an excluded filename.. removing' % (name,)
 			os.remove(filename)
-			
+
 		except Exception as e:
-			print "error deleting file, swallowing excepting. Original error %s" % e
+			# os.remove will not remove directories nor do we want it to
+			# in this use case - will need to run a cleanup script afterwards
+			print "error deleting file, swallowing exception. Original error %s" % e
 
 	return
 

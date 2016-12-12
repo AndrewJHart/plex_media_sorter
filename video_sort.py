@@ -180,12 +180,10 @@ def main():
 
 				# get & check media type from metadata
 				media_type = get_media_type(metadata)
-
-				# print file_type & status for user
-				print '\nType: %s ..' % media_type
 				
 				# if 1st return val is true move media
-				if media_type and media_type is not 'unknown':
+				if media_type:
+					print '\nType: %s ..' % media_type
 					move_media_by_type(media_type, name)
 
 			except Exception as e:

@@ -327,7 +327,7 @@ def move_media_by_type(media_type, filename):
         # remove the "undesirables" (baskets of deplorables lol)
         try:
             print 'Oops!! %s is an excluded filename.. removing' % (name,)
-            os.remove(filename)
+            # os.remove(filename)
 
         except Exception as e:
             # os.remove will not remove directories nor do we want it to

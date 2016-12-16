@@ -72,34 +72,16 @@ allowed_extensions = (
 # immutable list/tuple of filenames to ignore or skip
 # some of these qre required because they bypass allowed
 # extensions e.g. rarbg.com.mp4
-# @todo will use lowercase on exclusions to reduce size of list
-# @todo and will use simple technique to ensure compare is lower
-_excluded_filenames = (
-    '.part',
-    'sample',
-    'sample.avi',
-    'sample.mkv',
-    'sample.mp4',
-    'ETRG.mp4',
-    'rarbg.com.mp4',
-    'rarbg.com.txt',
-    'RARBG.COM.mp4',
-    'RARBG.COM.txt',
-    'RARBG.com.txt',
-)
-
 excluded_filenames = (
     '.part',
     'sample',
     'sample.avi',
     'sample.mkv',
     'sample.mp4',
-    'ETRG.mp4',
+    'etrg.mp4',
     'rarbg.com.mp4',
-    # 'RARBG.COM.mp4',
     'rarbg.com.txt',
-    # 'RARBG.COM.txt',
-    # 'RARBG.com.txt',
+    'rarbg.txt'
 )
 
 # todo whitelist allowed types
@@ -202,6 +184,10 @@ def main():
                 if media_type:
                     print '\nType: %s ..' % media_type
                     move_media_by_type(media_type, name)
+                else:
+                    # remove unneeded files & continue
+                    remove_non_media(name)
+                    continue
 
             except Exception as e:
                 raise Exception(e)
@@ -340,37 +326,55 @@ def move_media_by_type(media_type, filename):
                 tmp_path = None
 
         else:
-            print '\nNot a media file or unknown media. Unable to determine type..'
+            print '\nNot a media file %s or unknown media. Unable to determine type..' % (name,)
     else:
         # remove the "undesirables" (baskets of deplorables lol)
-        try:
-            if os.path.isfile(filename):
-                # double check that we aren't somehow removing a valid file
-                # this will likely be removed as we should never reach this gate
-                if extension == '.part':
-                    return Notifier.notify(
-                        'Skipping %s - not finished downloading' % (name),
-                        title='Video Sort',
-                        sound='Frog'
-                    )
-                else:
-                    # remove the file
-                    print 'Oops!! %s is an excluded filename.. removing' % (name,)
-                    print 'Removing.. full path: %s' % (filename,)
-
-                    os.remove(filename)
-
-            elif os.path.isdir(filename):
-                # os.remove() chokes on directories mostly.. @todo working on
-                print "This was a directory.. skipping.. %s" % (filename,)
-
-        except Exception as e:
-            # os.remove will not remove directories nor do we want it to
-            # in this use case - will need to run a cleanup script afterwards
-            print "error deleting file, swallowing exception. Original error %s" % e
-
+        remove_non_media(filename)
 
     return
+
+
+def remove_non_media(filename):
+    """
+    Simple wrapper around os.remove() for single files or empty
+     directories with a few additional checks to ensure files 
+    that are being removed should be removed.
+
+    @param  {str}  `filename`  string representing the current filename
+    """
+    if os.path.isdir(filename):
+        # os.remove() chokes on directories mostly.. @todo working on
+        print "This was a directory.. skipping.. %s" % (filename,)
+
+        return
+
+    # attempt to remove the files that are non-media or subtitles
+    try:
+        # extra filename from full path
+        name = get_filename_from_path(filename)
+
+        # yet again get the extension
+        extension = get_extension_from_filename(name)
+
+        if os.path.isfile(filename):
+            # double check that we aren't somehow removing a valid file
+            # this will likely be removed as we should never reach this gate
+            if extension == '.part':
+                return Notifier.notify(
+                    'Skipping %s - not finished downloading' % (filename),
+                    title='Video Sort',
+                    sound='Frog'
+                )
+            else:
+                print 'Oops!! %s is an excluded filename.. removing' % (name,)
+
+                # remove the file
+                os.remove(filename)
+
+    except Exception as e:
+        # os.remove will not remove directories nor do we want it to
+        # in this use case - will need to run a cleanup script afterwards
+        print "error deleting file, swallowing exception. Original error %s" % e
 
 
 def cleanup(path):

@@ -326,13 +326,25 @@ def move_media_by_type(media_type, filename):
     else:
         # remove the "undesirables" (baskets of deplorables lol)
         try:
-            print 'Oops!! %s is an excluded filename.. removing' % (name,)
-            # os.remove(filename)
+            if os.path.isfile(filename): 
+                print 'Oops!! %s is an excluded filename.. removing' % (name,)
+                print 'full filename was %s' % (filename,)
+
+                # double check that we aren't somehow removing a valid file
+                if extension == '.part':
+                    return Notifier.notify(
+                        'Skipping %s - not finished downloading' % (name),
+                        title='Video Sort',
+                        sound='Frog'
+                    )
+            elif os.path.isdir(filename):
+                print "This was a directory.. %s" % (filename,)
 
         except Exception as e:
             # os.remove will not remove directories nor do we want it to
             # in this use case - will need to run a cleanup script afterwards
             print "error deleting file, swallowing exception. Original error %s" % e
+
 
     return
 

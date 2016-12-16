@@ -72,7 +72,9 @@ allowed_extensions = (
 # immutable list/tuple of filenames to ignore or skip
 # some of these qre required because they bypass allowed
 # extensions e.g. rarbg.com.mp4
-excluded_filenames = (
+# @todo will use lowercase on exclusions to reduce size of list
+# @todo and will use simple technique to ensure compare is lower
+_excluded_filenames = (
     '.part',
     'sample',
     'sample.avi',
@@ -83,6 +85,21 @@ excluded_filenames = (
     'rarbg.com.txt',
     'RARBG.COM.mp4',
     'RARBG.COM.txt',
+    'RARBG.com.txt',
+)
+
+excluded_filenames = (
+    '.part',
+    'sample',
+    'sample.avi',
+    'sample.mkv',
+    'sample.mp4',
+    'ETRG.mp4',
+    'rarbg.com.mp4',
+    # 'RARBG.COM.mp4',
+    'rarbg.com.txt',
+    # 'RARBG.COM.txt',
+    # 'RARBG.com.txt',
 )
 
 # todo whitelist allowed types
@@ -243,7 +260,8 @@ def move_media_by_type(media_type, filename):
 
     # ensure that this is the proper file type first & not an excluded filename
     # if any(word for word in excluded_filenames)
-    if extension in allowed_extensions and name not in excluded_filenames:
+    print "checking %s to lower %s compared with %s" % (name, name.lower(), excluded_filenames)
+    if extension in allowed_extensions and name.lower() not in excluded_filenames:
         # catch subtitles that are not named the same as movie & correct for plex
         if 'eng' in name.lower() and '.srt' in name.lower():
             # strip the extension from filename, get the path, & build the filename
@@ -270,7 +288,7 @@ def move_media_by_type(media_type, filename):
             # cache destination path
             dest_path = os.path.join(base_path, shows_path)
             
-            print 'moving %s %s to %s' % (media_type, name, dest_path)
+            print 'moving %s %s from %s to %s' % (media_type, filename, name, dest_path)
 
             # move the file
             try:
@@ -326,19 +344,25 @@ def move_media_by_type(media_type, filename):
     else:
         # remove the "undesirables" (baskets of deplorables lol)
         try:
-            if os.path.isfile(filename): 
-                print 'Oops!! %s is an excluded filename.. removing' % (name,)
-                print 'full filename was %s' % (filename,)
-
+            if os.path.isfile(filename):
                 # double check that we aren't somehow removing a valid file
+                # this will likely be removed as we should never reach this gate
                 if extension == '.part':
                     return Notifier.notify(
                         'Skipping %s - not finished downloading' % (name),
                         title='Video Sort',
                         sound='Frog'
                     )
+                else:
+                    # remove the file
+                    print 'Oops!! %s is an excluded filename.. removing' % (name,)
+                    print 'Removing.. full path: %s' % (filename,)
+
+                    os.remove(filename)
+
             elif os.path.isdir(filename):
-                print "This was a directory.. %s" % (filename,)
+                # os.remove() chokes on directories mostly.. @todo working on
+                print "This was a directory.. skipping.. %s" % (filename,)
 
         except Exception as e:
             # os.remove will not remove directories nor do we want it to

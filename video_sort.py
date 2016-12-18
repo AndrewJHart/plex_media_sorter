@@ -44,12 +44,12 @@ t_api = '%s://%s:%s/%s/%s/' % (
 session = http_request.Session()
 
 # base & source paths
-base_path = '/Users/michelle/'
+base_path = 'F:'
 source_path = os.path.join(base_path, 'tmp/')
 
 # destination paths
 movies_path = 'Movies/'
-shows_path = 'TV Shows/'
+shows_path = 'Shows/'
 
 # tuple of globs to handle various levels
 # of nesting with downloaded files

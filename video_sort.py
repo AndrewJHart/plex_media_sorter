@@ -100,7 +100,7 @@ in: '/path/to/movies/movie_name_folder/movie_name.movie'
                                        ----------------
 out: 'move_name.movie'
 """
-get_filename_from_path = lambda f: f.rsplit('/', 1)[1]
+get_filename_from_path = lambda f: f.rsplit('\\', 1)[1]
 
 
 """
@@ -113,7 +113,7 @@ in: '/path/to/movies/movie_name_folder/movie_name.movie'
                                             
 out: '/path/to/movies/movie_name_folder'
 """
-get_path_from_filename = lambda f: f.rsplit('/', 1)[0]
+get_path_from_filename = lambda f: f.rsplit('\\', 1)[0]
 
 
 """
@@ -126,7 +126,7 @@ in: '/path/to/movies/movie_name_folder/movie_name.movie'
                       ---------------
 out: 'move_name_folder'
 """
-build_filename_from_path = lambda f: f.rsplit('/', 2)[1]
+build_filename_from_path = lambda f: f.rsplit('\\', 2)[1]
 
 
 """

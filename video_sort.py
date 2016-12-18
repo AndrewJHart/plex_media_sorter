@@ -12,7 +12,7 @@ import json
 from guessit import guess_file_info
 
 # import pync for osX notifications
-from pync import Notifier
+# from pync import Notifier
 
 # import requests for elegant http requests to transmission rpc api
 import requests as http_request
@@ -20,7 +20,7 @@ import requests as http_request
 # transmission (t) rpc api
 t_proto     = 'http'          # http protocol
 t_host      = '127.0.0.1'     # localhost only
-t_port      = '9091'          # t server port
+t_port      = '8300'          # t server port
 t_path      = 'transmission'  # url path
 t_session   = ''              # session key
 t_endpoint  = 'rpc'           # resource endpoint
@@ -156,11 +156,11 @@ def main():
     be moved.
     """
     # display some welcome text to the user
-    print '\n\n'
-    print ' ===================================================='
-    print ' = LETS GET TO SORTING & MOVING YOUR MEDIA FILES :) ='
-    print ' ===================================================='
-    print '\n'
+    print('\n\n')
+    print(' ====================================================')
+    print(' = LETS GET TO SORTING & MOVING YOUR MEDIA FILES :) =')
+    print(' ====================================================')
+    print('\n')
 
     # get session key & prep
     t_session = get_session_key()
@@ -171,8 +171,8 @@ def main():
         for name in glob.glob(path):
             # wrap in try/catch
             try:
-                print '\n<---------------------->\n'
-                print 'Found: \n %s' % get_filename_from_path(name)
+                print('\n<---------------------->\n')
+                print('Found: \n %s' % get_filename_from_path(name))
 
                 # get media metadata for this file
                 metadata = guess_file_info(name)
@@ -182,7 +182,7 @@ def main():
                 
                 # if 1st return val is true move media
                 if media_type:
-                    print '\nType: %s ..' % media_type
+                    print('\nType: %s ..' % media_type)
                     move_media_by_type(media_type, name)
                 else:
                     # remove unneeded files & continue
@@ -246,7 +246,7 @@ def move_media_by_type(media_type, filename):
 
     # ensure that this is the proper file type first & not an excluded filename
     # if any(word for word in excluded_filenames)
-    print "checking %s to lower %s compared with %s" % (name, name.lower(), excluded_filenames)
+    print("checking %s to lower %s compared with %s" % (name, name.lower(), excluded_filenames))
     if extension in allowed_extensions and name.lower() not in excluded_filenames:
         # catch subtitles that are not named the same as movie & correct for plex
         if 'eng' in name.lower() and '.srt' in name.lower():
@@ -261,20 +261,20 @@ def move_media_by_type(media_type, filename):
             tmp_filename = build_filename_from_path(filename)
 
             # print info about op & updated filename for subtitles
-            print '\nThis subtitle has a name that plex does not recognize.. Renaming %s to %s.srt' % (name, tmp_filename)
+            print('\nThis subtitle has a name that plex does not recognize.. Renaming %s to %s.srt' % (name, tmp_filename))
 
             # rename the subs to the episode name with srt extension
             shutil.move(filename, '%s/%s.srt' % (tmp_path, tmp_filename))
 
         if media_type == 'unknown':
-            print 'This is unknown.. a folder maybe? skipping..'
+            print('This is unknown.. a folder maybe? skipping..')
             return
 
         if media_type == 'episode' or media_type == 'episodesubtitle':
             # cache destination path
             dest_path = os.path.join(base_path, shows_path)
             
-            print 'moving %s %s from %s to %s' % (media_type, filename, name, dest_path)
+            print('moving %s %s from %s to %s' % (media_type, filename, name, dest_path))
 
             # move the file
             try:
@@ -292,24 +292,24 @@ def move_media_by_type(media_type, filename):
                 tmp_path = None
 
             # notify end-user that move was accomplished
-            Notifier.notify(
-                'Moved %s %s to %s' % (media_type, name, dest_path),
-                title='Video Sort',
-                sound='Ping'
-            )
+            # Notifier.notify(
+            #     'Moved %s %s to %s' % (media_type, name, dest_path),
+            #     title='Video Sort',
+            #     sound='Ping'
+            # )
 
 
         elif media_type == 'movie' or media_type == 'moviesubtitle':
             # cache destination path
             dest_path = os.path.join(base_path, movies_path)
 
-            print 'moving %s %s to %s' % (media_type, name, dest_path)
+            print('moving %s %s to %s' % (media_type, name, dest_path))
 
-            Notifier.notify(
-                'Moved %s %s to %s' % (media_type, name, dest_path),
-                title='Video Sort',
-                sound='Ping'
-            )
+            # Notifier.notify(
+            #     'Moved %s %s to %s' % (media_type, name, dest_path),
+            #     title='Video Sort',
+            #     sound='Ping'
+            # )
             
             # move the file
             try:
@@ -326,7 +326,7 @@ def move_media_by_type(media_type, filename):
                 tmp_path = None
 
         else:
-            print '\nNot a media file %s or unknown media. Unable to determine type..' % (name,)
+            print('\nNot a media file %s or unknown media. Unable to determine type..' % (name,))
     else:
         # remove the "undesirables" (baskets of deplorables lol)
         remove_non_media(filename)
@@ -344,7 +344,7 @@ def remove_non_media(filename):
     """
     if os.path.isdir(filename):
         # os.remove() chokes on directories mostly.. @todo working on
-        print "This was a directory.. skipping.. %s" % (filename,)
+        print("This was a directory.. skipping.. %s" % (filename,))
 
         return
 
@@ -360,13 +360,14 @@ def remove_non_media(filename):
             # double check that we aren't somehow removing a valid file
             # this will likely be removed as we should never reach this gate
             if extension == '.part':
-                return Notifier.notify(
-                    'Skipping %s - not finished downloading' % (filename),
-                    title='Video Sort',
-                    sound='Frog'
-                )
+                print('Skipping %s - not finished downloading' % (filename))
+                # return Notifier.notify(
+                #     'Skipping %s - not finished downloading' % (filename),
+                #     title='Video Sort',
+                #     sound='Frog'
+                # )
             else:
-                print 'Oops!! %s is an excluded filename.. removing' % (name,)
+                print('Oops!! %s is an excluded filename.. removing' % (name,))
 
                 # remove the file
                 os.remove(filename)
@@ -374,7 +375,7 @@ def remove_non_media(filename):
     except Exception as e:
         # os.remove will not remove directories nor do we want it to
         # in this use case - will need to run a cleanup script afterwards
-        print "error deleting file, swallowing exception. Original error %s" % e
+        print( "error deleting file, swallowing exception. Original error %s" % e)
 
 
 def cleanup(path):

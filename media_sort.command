@@ -183,11 +183,26 @@ def main():
                 # if 1st return val is true move media
                 if media_type:
                     print '\nType: %s ..' % media_type
+
+                    Notifier.notify(
+                        'Attempting to move %s %s' % (media_type, name),
+                        title='Video Sort',
+                        sound='Ping'
+                    )
+
                     move_media_by_type(media_type, name)
                 else:
+                    print '\nRemoving %s ..' % name
+
+                    Notifier.notify(
+                        'Attempting to delete %s' % (name),
+                        title='Video Sort',
+                        sound='Ping'
+                    )
+
                     # remove unneeded files & continue
-                    remove_non_media(name)
-                    continue
+                    # remove_non_media(name)
+
 
             except Exception as e:
                 raise Exception(e)
@@ -329,7 +344,8 @@ def move_media_by_type(media_type, filename):
             print '\nNot a media file %s or unknown media. Unable to determine type..' % (name,)
     else:
         # remove the "undesirables" (baskets of deplorables lol)
-        remove_non_media(filename)
+        # remove_non_media(filename)
+        pass  # cant tell if this is deleing folders beccuase they don't match types agove
 
     return
 
@@ -353,20 +369,25 @@ def remove_non_media(filename):
         # extra filename from full path
         name = get_filename_from_path(filename)
 
-        # yet again get the extension
         extension = get_extension_from_filename(name)
 
         if os.path.isfile(filename):
-            # double check that we aren't somehow removing a valid file
-            # this will likely be removed as we should never reach this gate
-            if extension == '.part':
+            if extension in allowed_extensions:
+                # double check that we aren't somehow removing a valid file
+                # this will likely be removed as we should never reach this gate
                 return Notifier.notify(
-                    'Skipping %s - not finished downloading' % (filename),
+                    'Skipping %s - do not want to delete!!' % (filename),
                     title='Video Sort',
                     sound='Frog'
                 )
             else:
                 print 'Oops!! %s is an excluded filename.. removing' % (name,)
+
+                Notifier.notify(
+                    'Deleting %s' % (filename),
+                    title='Video Sort',
+                    sound='Frog'
+                )
 
                 # remove the file
                 os.remove(filename)

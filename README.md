@@ -1,3 +1,9 @@
+Python 3 version coming
+=======================
+Haven't had much time to really work on side projects, however I plan on doing quite a bit with this little script. I'll
+be releasing a python 3.7 version soon and removing some unused bits as well as adding some goodies that could really be useful. Check back :)
+
+
 Origin
 ==========
 
@@ -9,7 +15,12 @@ If you haven't heard of [plex](http://plex.tv) then I suggest you check it out b
 Video Sort
 ===========
 
-Video sort is a simple script that is to be executed after the media download has completed. For example, I use transmission, which has an option to run a script after a file has completed downloaded. This is where `video_sort.command` comes into play. Once a torrent has completed & the script is invoked it will (and very successfully i might add) determine the type of the various file(s) and then begin to sort that media by its type (episode, movie, subtitle, etc..), finally moving the media to specified folders that are set in the configuration. 
+Video sort is a simple script that is to be executed after the media download has completed. For example, I use transmission to download all of my media, which has an option to run a script after a file has completed downloaded. This is where `video_sort.py` comes into play.
+
+> you may need to name the file video_sort.command and make it executable. There should be one in one of the other branches if
+> you want to just download it. 
+
+Once a torrent has completed & the script is invoked it will (and very successfully i might add) determine the type of the various file(s) and then begin to sort that media by its type (episode, movie, subtitle, etc..), finally moving the media to specified folders that are set in the configuration. 
 
 > This library makes heavy use of the python `guessit` library, which is
 > an amazingly effective tool for extracting metadata from a media file or filename. Guessit can be found [here](https://github.com/guessit-io/guessit)

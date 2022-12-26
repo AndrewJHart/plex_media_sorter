@@ -5,4 +5,4 @@ pync==1.6.1
 python-dateutil==2.4.2
 requests==2.20.0
 stevedore==1.10.0
-wheel==0.24.0
+wheel==0.38.1
